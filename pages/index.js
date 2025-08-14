@@ -49,7 +49,11 @@ export default function TypingPractice() {
     ];
     
     const randomTopic = topics[Math.floor(Math.random() * topics.length)];
-    const numSentences = Math.floor(Math.random() * 4) + 2; // 2-5 sentences
+    
+    // Better sentence distribution: mostly 2-3, some 1, some 4
+    const sentenceDistribution = [1, 2, 2, 2, 3, 3, 3, 3, 4];
+    const numSentences = sentenceDistribution[Math.floor(Math.random() * sentenceDistribution.length)];
+    
     const randomSeed = Math.random().toString(36).substring(7);
     
     try {
@@ -184,7 +188,7 @@ export default function TypingPractice() {
           className="text-center mb-2"
         >
           <h1 className="text-3xl md:text-4xl font-light text-slate-800 tracking-tight">
-            Type<span className="font-medium text-blue-600">Flow</span>
+            Speed<span className="font-medium text-blue-600">Strokes</span>
           </h1>
         </motion.div>
 
