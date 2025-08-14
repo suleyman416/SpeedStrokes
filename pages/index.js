@@ -13,15 +13,107 @@ import InstallPrompt from '../components/ui/InstallPrompt';
 export default function TypingPractice() {
   const [currentParagraph, setCurrentParagraph] = useState('');
   const [userInput, setUserInput] = useState('');
-  const [isGenerating, setIsGenerating] = useState(true);
   const [startTime, setStartTime] = useState(null);
-  const [isCompleted, setIsCompleted] = useState(false);
   const [wpm, setWpm] = useState(0);
   const [bestWpm, setBestWpm] = useState(0);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [completionStats, setCompletionStats] = useState({ words: 0, time: 0 });
-  
+  const [usedTexts, setUsedTexts] = useState(new Set()); // Track used texts
+  const [textPool, setTextPool] = useState([]); // Pool of available texts
   const inputRef = useRef(null);
+
+  // Initialize text pool with all available texts
+  useEffect(() => {
+    const allTexts = [
+      // Very short texts (1 sentence)
+      "The sun rose over the mountains.",
+      "Coffee brewing in the kitchen.",
+      "Stars twinkled in the night sky.",
+      "Wind howled through the trees.",
+      "The phone rang unexpectedly.",
+      "Birds sang in the morning air.",
+      "The cat stretched lazily.",
+      "Rain fell softly outside.",
+      "The clock ticked steadily.",
+      "A dog barked in the distance.",
+      
+      // Short texts (2 sentences)
+      "Birds sang in the morning air. The flowers bloomed beautifully.",
+      "The cat stretched lazily. Sunlight warmed the windowsill.",
+      "The dog wagged its tail excitedly. Treats were hidden in the cupboard.",
+      "An old friend was calling. The conversation lasted for hours.",
+      "The movie theater was packed with excited viewers. Popcorn popped in the background.",
+      "The beach was crowded with summer visitors. Children built sandcastles near the water's edge.",
+      "The library was filled with students studying quietly. Books were scattered across tables.",
+      "The garden was full of colorful flowers. Bees buzzed between the blossoms.",
+      "The kitchen smelled of freshly baked bread. My grandmother's recipe called for simple ingredients.",
+      "The art gallery featured works from local artists. Each painting told a unique story.",
+      
+      // Medium texts (3 sentences)
+      "The river flowed gently through the valley. Fish swam beneath the surface. Trees lined the banks.",
+      "Raindrops tapped against the window pane. The street below was empty and quiet. A few cars drove by slowly.",
+      "Music played softly from the radio. The melody was familiar and comforting. Memories flooded back from years ago.",
+      "Everyone settled into their seats. The lights dimmed slowly. The movie began with a dramatic opening scene.",
+      "Seagulls soared overhead searching for food. The waves crashed rhythmically against the shore. Families enjoyed picnics on the sand.",
+      "Some people typed on laptops while others read physical books. The atmosphere was peaceful and focused. Knowledge seemed to hang in the air.",
+      "Butterflies danced in the warm air. Everything seemed alive and vibrant. The garden was a perfect place for meditation.",
+      "The dough had risen perfectly overnight. I could hear the timer ticking down. Soon the golden crust would be ready to enjoy.",
+      "Visitors moved slowly from piece to piece. Some stopped to read the descriptions. The atmosphere encouraged quiet contemplation.",
+      "The melody was familiar and comforting. Memories flooded back from years ago. It felt like being transported to another time.",
+      
+      // Medium-long texts (4 sentences)
+      "Children played in the park nearby. Laughter echoed through the trees. The swings moved back and forth. Parents watched from benches.",
+      "The library was filled with students studying quietly. Books were scattered across tables. Some people typed on laptops while others read physical books. The atmosphere was peaceful and focused.",
+      "The garden was full of colorful flowers. Bees buzzed between the blossoms. Butterflies danced in the warm air. Everything seemed alive and vibrant.",
+      "The kitchen smelled of freshly baked bread. My grandmother's recipe called for simple ingredients but created something magical. The dough had risen perfectly overnight. I could hear the timer ticking down.",
+      "The beach was crowded with summer visitors. Children built sandcastles near the water's edge. Seagulls soared overhead searching for food. The waves crashed rhythmically against the shore.",
+      "The old bookstore had a mysterious atmosphere. Dust motes danced in the sunlight streaming through the windows. Shelves were packed with books of every genre imaginable. The owner knew exactly where to find any title.",
+      "The art gallery featured works from local artists. Each painting told a unique story through color and composition. Visitors moved slowly from piece to piece. Some stopped to read the descriptions.",
+      "The movie theater was packed with excited viewers. Popcorn popped in the background. Everyone settled into their seats. The lights dimmed slowly.",
+      "The garden was full of colorful flowers. Bees buzzed between the blossoms. Butterflies danced in the warm air. Everything seemed alive and vibrant.",
+      "The library was filled with students studying quietly. Books were scattered across tables. Some people typed on laptops while others read physical books.",
+      
+      // Longer texts (5 sentences)
+      "A gentle breeze rustled the leaves overhead. The afternoon sun cast long shadows across the path. Birds chirped melodiously in the branches. The air smelled of fresh grass and flowers. It was a perfect spring day.",
+      "The kitchen smelled of freshly baked bread. My grandmother's recipe called for simple ingredients but created something magical. The dough had risen perfectly overnight. I could hear the timer ticking down. Soon the golden crust would be ready to enjoy.",
+      "The old bookstore had a mysterious atmosphere. Dust motes danced in the sunlight streaming through the windows. Shelves were packed with books of every genre imaginable. The owner knew exactly where to find any title. It felt like stepping into another world entirely.",
+      "The art gallery featured works from local artists. Each painting told a unique story through color and composition. Visitors moved slowly from piece to piece. Some stopped to read the descriptions. The atmosphere encouraged quiet contemplation.",
+      "The beach was crowded with summer visitors. Children built sandcastles near the water's edge. Seagulls soared overhead searching for food. The waves crashed rhythmically against the shore. Families enjoyed picnics on the sand.",
+      "The library was filled with students studying quietly. Books were scattered across tables. Some people typed on laptops while others read physical books. The atmosphere was peaceful and focused. Knowledge seemed to hang in the air.",
+      "The garden was full of colorful flowers. Bees buzzed between the blossoms. Butterflies danced in the warm air. Everything seemed alive and vibrant. The garden was a perfect place for meditation.",
+      "The movie theater was packed with excited viewers. Popcorn popped in the background. Everyone settled into their seats. The lights dimmed slowly. The movie began with a dramatic opening scene.",
+      "The kitchen smelled of freshly baked bread. My grandmother's recipe called for simple ingredients but created something magical. The dough had risen perfectly overnight. I could hear the timer ticking down.",
+      "The art gallery featured works from local artists. Each painting told a unique story through color and composition. Visitors moved slowly from piece to piece. Some stopped to read the descriptions."
+    ];
+    
+    // Shuffle the texts for better variety
+    const shuffledTexts = [...allTexts].sort(() => Math.random() - 0.5);
+    setTextPool(shuffledTexts);
+  }, []);
+
+  // Smart text selection - avoid immediate repeats
+  const getNextText = useCallback(() => {
+    if (textPool.length === 0) return "The sun rose over the mountains."; // Fallback
+    
+    // Find texts that haven't been used recently
+    const availableTexts = textPool.filter(text => !usedTexts.has(text));
+    
+    // If all texts have been used, reset the used texts set
+    if (availableTexts.length === 0) {
+      setUsedTexts(new Set());
+      return textPool[Math.floor(Math.random() * textPool.length)];
+    }
+    
+    // Pick a random unused text
+    const selectedText = availableTexts[Math.floor(Math.random() * availableTexts.length)];
+    
+    // Mark this text as used
+    setUsedTexts(prev => new Set([...prev, selectedText]));
+    
+    return selectedText;
+  }, [textPool, usedTexts]);
 
   const normalizeText = (text) => text.replace(/[\u2018\u2019]/g, "'").replace(/\u2026/g, '...');
 
@@ -49,34 +141,13 @@ export default function TypingPractice() {
       }
     } catch (error) {
       console.error('Error generating text:', error);
-      // Fallback to predefined paragraphs with good variety
-      const fallbacks = [
-        "The sun rose over the mountains.", // 1 sentence - very short
-        "Birds sang in the morning air. The flowers bloomed beautifully.", // 2 sentences - short
-        "The river flowed gently through the valley. Fish swam beneath the surface. Trees lined the banks.", // 3 sentences - medium
-        "Children played in the park nearby. Laughter echoed through the trees. The swings moved back and forth. Parents watched from benches.", // 4 sentences - medium-long
-        "A gentle breeze rustled the leaves overhead. The afternoon sun cast long shadows across the path. Birds chirped melodiously in the branches. The air smelled of fresh grass and flowers. It was a perfect spring day.", // 5 sentences - longer
-        "Coffee brewing in the kitchen.", // 1 sentence - very short
-        "The cat stretched lazily. Sunlight warmed the windowsill.", // 2 sentences - short
-        "Raindrops tapped against the window pane. The street below was empty and quiet. A few cars drove by slowly.", // 3 sentences - medium
-        "The library was filled with students studying quietly. Books were scattered across tables. Some people typed on laptops while others read physical books. The atmosphere was peaceful and focused.", // 4 sentences - medium-long
-        "The kitchen smelled of freshly baked bread. My grandmother's recipe called for simple ingredients but created something magical. The dough had risen perfectly overnight. I could hear the timer ticking down. Soon the golden crust would be ready to enjoy.", // 5 sentences - longer
-        "Stars twinkled in the night sky.", // 1 sentence - very short
-        "The dog wagged its tail excitedly. Treats were hidden in the cupboard.", // 2 sentences - short
-        "Music played softly from the radio. The melody was familiar and comforting. Memories flooded back from years ago.", // 3 sentences - medium
-        "The garden was full of colorful flowers. Bees buzzed between the blossoms. Butterflies danced in the warm air. Everything seemed alive and vibrant.", // 4 sentences - medium-long
-        "The old bookstore had a mysterious atmosphere. Dust motes danced in the sunlight streaming through the windows. Shelves were packed with books of every genre imaginable. The owner knew exactly where to find any title. It felt like stepping into another world entirely.", // 5 sentences - longer
-        "Wind howled through the trees.", // 1 sentence - very short
-        "The phone rang unexpectedly. An old friend was calling.", // 2 sentences - short
-        "The movie theater was packed with excited viewers. Popcorn popped in the background. Everyone settled into their seats.", // 3 sentences - medium
-        "The beach was crowded with summer visitors. Children built sandcastles near the water's edge. Seagulls soared overhead searching for food. The waves crashed rhythmically against the shore.", // 4 sentences - medium-long
-        "The art gallery featured works from local artists. Each painting told a unique story through color and composition. Visitors moved slowly from piece to piece. Some stopped to read the descriptions. The atmosphere encouraged quiet contemplation.", // 5 sentences - longer
-      ];
-      setCurrentParagraph(fallbacks[Math.floor(Math.random() * fallbacks.length)]);
+      // Use smart text selection from our expanded pool
+      const selectedText = getNextText();
+      setCurrentParagraph(selectedText);
     }
     setIsGenerating(false);
     resetTyping();
-  }, []);
+  }, [getNextText]);
 
   const resetTyping = useCallback(() => {
     setUserInput('');
