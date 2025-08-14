@@ -55,7 +55,22 @@ export default function TypingPractice() {
         "Birds sang in the morning air. The flowers bloomed beautifully.", // 2 sentences - short
         "The river flowed gently through the valley. Fish swam beneath the surface. Trees lined the banks.", // 3 sentences - medium
         "Children played in the park nearby. Laughter echoed through the trees. The swings moved back and forth. Parents watched from benches.", // 4 sentences - medium-long
-        "A gentle breeze rustled the leaves overhead. The afternoon sun cast long shadows across the path. Birds chirped melodiously in the branches. The air smelled of fresh grass and flowers. It was a perfect spring day." // 5 sentences - longer
+        "A gentle breeze rustled the leaves overhead. The afternoon sun cast long shadows across the path. Birds chirped melodiously in the branches. The air smelled of fresh grass and flowers. It was a perfect spring day.", // 5 sentences - longer
+        "Coffee brewing in the kitchen.", // 1 sentence - very short
+        "The cat stretched lazily. Sunlight warmed the windowsill.", // 2 sentences - short
+        "Raindrops tapped against the window pane. The street below was empty and quiet. A few cars drove by slowly.", // 3 sentences - medium
+        "The library was filled with students studying quietly. Books were scattered across tables. Some people typed on laptops while others read physical books. The atmosphere was peaceful and focused.", // 4 sentences - medium-long
+        "The kitchen smelled of freshly baked bread. My grandmother's recipe called for simple ingredients but created something magical. The dough had risen perfectly overnight. I could hear the timer ticking down. Soon the golden crust would be ready to enjoy.", // 5 sentences - longer
+        "Stars twinkled in the night sky.", // 1 sentence - very short
+        "The dog wagged its tail excitedly. Treats were hidden in the cupboard.", // 2 sentences - short
+        "Music played softly from the radio. The melody was familiar and comforting. Memories flooded back from years ago.", // 3 sentences - medium
+        "The garden was full of colorful flowers. Bees buzzed between the blossoms. Butterflies danced in the warm air. Everything seemed alive and vibrant.", // 4 sentences - medium-long
+        "The old bookstore had a mysterious atmosphere. Dust motes danced in the sunlight streaming through the windows. Shelves were packed with books of every genre imaginable. The owner knew exactly where to find any title. It felt like stepping into another world entirely.", // 5 sentences - longer
+        "Wind howled through the trees.", // 1 sentence - very short
+        "The phone rang unexpectedly. An old friend was calling.", // 2 sentences - short
+        "The movie theater was packed with excited viewers. Popcorn popped in the background. Everyone settled into their seats.", // 3 sentences - medium
+        "The beach was crowded with summer visitors. Children built sandcastles near the water's edge. Seagulls soared overhead searching for food. The waves crashed rhythmically against the shore.", // 4 sentences - medium-long
+        "The art gallery featured works from local artists. Each painting told a unique story through color and composition. Visitors moved slowly from piece to piece. Some stopped to read the descriptions. The atmosphere encouraged quiet contemplation.", // 5 sentences - longer
       ];
       setCurrentParagraph(fallbacks[Math.floor(Math.random() * fallbacks.length)]);
     }
@@ -229,7 +244,7 @@ export default function TypingPractice() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="text-center text-slate-400 text-sm mt-1"
+          className="text-center text-slate-400 text-sm mt-3"
         >
           <p>Press <kbd className="px-2 py-1 bg-slate-100 rounded text-xs">1</kbd> for reset/again • <kbd className="px-2 py-1 bg-slate-100 rounded text-xs">Enter</kbd> for new/next • Use backspace to fix mistakes</p>
         </motion.div>

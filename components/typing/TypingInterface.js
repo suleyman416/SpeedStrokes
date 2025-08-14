@@ -24,7 +24,7 @@ export default function TypingInterface({
   }, [hasError, userInput, currentParagraph]);
 
   const renderCharacter = (char, index) => {
-    let className = "text-xl "; // ONLY CHANGE: made font bigger (was text-lg)
+    let className = "text-2xl "; // Bigger font: text-2xl (24px) instead of text-xl (20px)
     
     if (index < userInput.length) {
       const isCorrect = userInput[index] === char;
