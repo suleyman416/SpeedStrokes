@@ -27,59 +27,35 @@ export default function TypingPractice() {
 
   const generateParagraph = useCallback(async () => {
     setIsGenerating(true);
-    setCurrentParagraph('');
-    setUserInput('');
-    
-    const topics = [
-      'daily life and routines',
-      'family and friends', 
-      'food and cooking',
-      'weather and seasons',
-      'pets and animals',
-      'school and learning',
-      'work and jobs',
-      'sports and games',
-      'movies and books',
-      'music and songs',
-      'travel and places',
-      'cars and driving',
-      'home and garden',
-      'shopping and stores',
-      'health and exercise'
-    ];
-    
-    const randomTopic = topics[Math.floor(Math.random() * topics.length)];
-    
-    // Better sentence distribution: mostly 2-3, some 1, some 4
-    const sentenceDistribution = [1, 2, 2, 2, 3, 3, 3, 3, 4];
-    const numSentences = sentenceDistribution[Math.floor(Math.random() * sentenceDistribution.length)];
-    
-    const randomSeed = Math.random().toString(36).substring(7);
-    
     try {
-      const response = await InvokeLLM({
-        prompt: `Write a simple, natural paragraph about ${randomTopic} using common, everyday words. 
-        
-        Requirements:
-        - Exactly ${numSentences} sentences
-        - Use simple, common vocabulary that most people know
-        - Keep sentences shorter and easy to read
-        - Write in a conversational, natural style
-        - Avoid complex or technical words
-        - Include everyday situations and experiences
-        - Total length should be 120-280 characters
-        - Random variation: ${randomSeed}
-        
-        Return only the paragraph text.`,
+      const response = await fetch('/api/generate-text', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          prompt: "Generate a typing practice paragraph with varied sentence lengths. Most should be 2-3 sentences, some 4 sentences, very few 1 sentence. Make it engaging and natural.",
+          maxWords: 50
+        })
       });
       
-      setCurrentParagraph(normalizeText(response.trim()));
+      if (response.ok) {
+        const data = await response.json();
+        if (data.text && data.text.trim()) {
+          setCurrentParagraph(data.text.trim());
+        } else {
+          throw new Error('Empty response');
+        }
+      } else {
+        throw new Error('Failed to generate text');
+      }
     } catch (error) {
+      console.error('Error generating text:', error);
+      // Fallback to predefined paragraphs with good variety
       const fallbacks = [
-        "The cat spent the entire morning sitting by the living room window watching birds fly around the backyard. She seemed completely fascinated by their movements and would occasionally make little chirping sounds. My neighbor's bird feeder attracts all kinds of colorful birds throughout the day.",
-        "We ordered pizza for dinner last night and it was absolutely delicious. The cheese was perfectly melted and the crust was crispy on the outside but soft on the inside. Everyone at the table agreed it was the best pizza we had ever ordered from that restaurant.",
-        "The rain started pouring down just as I was walking home from the grocery store. I ran to the front door as quickly as possible but still got completely soaked by the time I reached the porch. My shoes were covered in mud from the wet ground and I had to leave them outside to dry.",
-        "My friend called me yesterday afternoon to discuss the details for the upcoming party. We talked for over an hour about what food to bring and how to decorate the venue. She mentioned that we should arrive early to help set up the decorations and arrange the tables."
+        "The sun rose over the mountains.", // 1 sentence - very short
+        "Birds sang in the morning air. The flowers bloomed beautifully.", // 2 sentences - short
+        "The river flowed gently through the valley. Fish swam beneath the surface. Trees lined the banks.", // 3 sentences - medium
+        "Children played in the park nearby. Laughter echoed through the trees. The swings moved back and forth. Parents watched from benches.", // 4 sentences - medium-long
+        "A gentle breeze rustled the leaves overhead. The afternoon sun cast long shadows across the path. Birds chirped melodiously in the branches. The air smelled of fresh grass and flowers. It was a perfect spring day." // 5 sentences - longer
       ];
       setCurrentParagraph(fallbacks[Math.floor(Math.random() * fallbacks.length)]);
     }
