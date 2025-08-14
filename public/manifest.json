@@ -2,6 +2,7 @@
   "name": "SpeedStrokes - Typing Practice App",
   "short_name": "SpeedStrokes",
   "description": "A beautiful typing practice app to improve your typing speed and accuracy. Practice with real-time feedback, track your WPM, and improve your typing skills.",
+  "version": "2.0.0",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -18,8 +19,9 @@
       "url": "/?action=new",
       "icons": [
         {
-          "src": "/icon-192.png",
-          "sizes": "192x192"
+          "src": "/icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
         }
       ]
     },
@@ -30,13 +32,20 @@
       "url": "/?action=reset",
       "icons": [
         {
-          "src": "/icon-192.png",
-          "sizes": "192x192"
+          "src": "/icon.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
         }
       ]
     }
   ],
   "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
     {
       "src": "/favicon-16x16.png",
       "sizes": "16x16",

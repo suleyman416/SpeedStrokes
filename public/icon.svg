@@ -10,12 +10,17 @@
   <rect width="512" height="512" rx="80" fill="url(#gradient)"/>
   
   <!-- Speed text -->
-  <text x="256" y="200" font-family="system-ui, -apple-system, sans-serif" font-size="80" font-weight="300" text-anchor="middle" fill="white" letter-spacing="2">
+  <text x="256" y="180" font-family="system-ui, -apple-system, sans-serif" font-size="70" font-weight="300" text-anchor="middle" fill="white" letter-spacing="1">
     Speed
   </text>
   
   <!-- Strokes text -->
-  <text x="256" y="320" font-family="system-ui, -apple-system, sans-serif" font-size="80" font-weight="500" text-anchor="middle" fill="white" letter-spacing="2">
+  <text x="256" y="280" font-family="system-ui, -apple-system, sans-serif" font-size="70" font-weight="500" text-anchor="middle" fill="white" letter-spacing="1">
     Strokes
+  </text>
+  
+  <!-- Small subtitle -->
+  <text x="256" y="380" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="300" text-anchor="middle" fill="white" opacity="0.8">
+    Typing Practice
   </text>
 </svg> 
