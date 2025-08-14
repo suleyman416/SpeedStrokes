@@ -23,30 +23,8 @@ export default function TypingInterface({
     return userInput.length;
   }, [hasError, userInput, currentParagraph]);
 
-  // Dynamic font sizing based on text length
-  const getFontSize = () => {
-    const textLength = currentParagraph.length;
-    const words = currentParagraph.split(' ').length;
-    
-    if (words <= 15) return 'text-2xl';        // Very short: 24px
-    if (words <= 25) return 'text-xl';         // Short: 20px  
-    if (words <= 35) return 'text-lg';         // Medium: 18px
-    if (words <= 45) return 'text-base';       // Medium-long: 16px
-    return 'text-sm';                           // Long: 14px (shouldn't happen)
-  };
-
-  const getContainerHeight = () => {
-    const words = currentParagraph.split(' ').length;
-    
-    if (words <= 15) return 'min-h-[60px] max-h-[80px]';    // Very short: compact
-    if (words <= 25) return 'min-h-[70px] max-h-[90px]';    // Short: balanced
-    if (words <= 35) return 'min-h-[80px] max-h-[100px]';   // Medium: standard
-    if (words <= 45) return 'min-h-[90px] max-h-[110px]';   // Medium-long: spacious
-    return 'min-h-[100px] max-h-[120px]';                    // Long: very spacious
-  };
-
   const renderCharacter = (char, index) => {
-    let className = `${getFontSize()} `;
+    let className = "text-xl "; // ONLY CHANGE: made font bigger (was text-lg)
     
     if (index < userInput.length) {
       const isCorrect = userInput[index] === char;
@@ -71,9 +49,9 @@ export default function TypingInterface({
   };
 
   return (
-    <div className="space-y-2 h-full flex flex-col">
+    <div className="space-y-1 h-full flex flex-col">
       {/* Paragraph Display */}
-      <div className="relative flex-1">
+      <div className="relative flex-1 max-h-[35vh]">
         {isGenerating ? (
           <div className="space-y-2">
             <Skeleton className="h-6 w-full" />
@@ -84,10 +62,10 @@ export default function TypingInterface({
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`text-left p-3 bg-slate-50/50 rounded-2xl border border-slate-100 ${getContainerHeight()} flex items-center justify-center transition-all duration-300`}
+            className="text-left p-2 bg-slate-50/50 rounded-2xl border border-slate-100 h-full min-h-[50px] max-h-[30vh] flex items-center"
             onClick={() => inputRef.current?.focus()}
           >
-            <div className="font-mono tracking-wide leading-relaxed w-full text-center">
+            <div className="font-mono tracking-wide leading-tight w-full">
               {currentParagraph.split('').map((char, index) => renderCharacter(char, index))}
             </div>
           </motion.div>
@@ -102,7 +80,7 @@ export default function TypingInterface({
           onChange={(e) => onInputChange(e.target.value)}
           placeholder={isGenerating ? "Generating new text..." : "Start typing here..."}
           disabled={isGenerating || isCompleted}
-          className={`w-full min-h-[56px] max-h-[160px] p-3 text-lg font-mono leading-relaxed bg-white border-2 rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all duration-200 resize-none placeholder:text-slate-400 disabled:bg-slate-50 disabled:cursor-not-allowed overflow-y-auto ${
+          className={`w-full min-h-[64px] max-h-[200px] p-3 text-lg font-mono leading-relaxed bg-white border-2 rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all duration-200 resize-none placeholder:text-slate-400 disabled:bg-slate-50 disabled:cursor-not-allowed overflow-y-auto ${
             hasError 
               ? 'border-red-400 focus:border-red-400 bg-red-50/30' 
               : 'border-slate-200 focus:border-blue-400'
