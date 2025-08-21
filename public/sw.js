@@ -1,16 +1,10 @@
-const CACHE_NAME = 'speedstrokes-v2';
-const STATIC_CACHE = 'speedstrokes-static-v2';
-const DYNAMIC_CACHE = 'speedstrokes-dynamic-v2';
+const CACHE_NAME = 'speedstrokes-v4';
+const STATIC_CACHE = 'speedstrokes-static-v4';
+const DYNAMIC_CACHE = 'speedstrokes-dynamic-v4';
 
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
-  '/favicon-16x16.png',
-  '/favicon-32x32.png',
-  '/icon-192.png',
-  '/icon-512.png',
-  '/apple-touch-icon.png',
-  '/safari-pinned-tab.svg',
   '/browserconfig.xml'
 ];
 
